@@ -14,14 +14,13 @@ const auth = new google.auth.GoogleAuth({
   scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 });
 
-
 const sheets = google.sheets({ version: "v4", auth });
 
 // === MCP Setup ===
 const mcp = new McpServer({ name: "google-sheets" });
 
 mcp.tool("read_sheet", {
-  description: "Читает данные из Google Sheets по ID и диапазону",
+  description: "Читає дані з Google Sheets по ID та діапазону",
   input: {
     type: "object",
     properties: {
@@ -36,7 +35,7 @@ mcp.tool("read_sheet", {
   }
 });
 
-// === Express endpoint for MCP ===
+// === Express endpoints ===
 app.post("/mcp", async (req, res) => {
   try {
     const response = await mcp.handle(req.body);
@@ -47,9 +46,17 @@ app.post("/mcp", async (req, res) => {
   }
 });
 
-app.get("/", (_, res) => res.send("✅ MCP Google Sheets Server работает"));
+app.get("/", (_, res) => res.send("✅ MCP Google Sheets Server працює"));
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log(`🚀 MCP Google Sheets running on port ${port}`);
-});
+app.get("/health", (_, res) => res.json({ status: "ok" }));
+
+// Для Vercel експортуємо app
+export default app;
+
+// Для локальної розробки
+if (process.env.NODE_ENV !== "production") {
+  const port = process.env.PORT || 3000;
+  app.listen(port, () => {
+    console.log(`🚀 MCP Google Sheets running on port ${port}`);
+  });
+}
