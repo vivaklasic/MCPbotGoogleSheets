@@ -1,9 +1,14 @@
 {
-  "name": "mcp-sheets-server",
+  "name": "google-sheets-mcp",
   "version": "1.0.0",
   "type": "module",
+  "main": "app/index.js",
+  "scripts": {
+    "start": "node app/index.js"
+  },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "https://codeload.github.com/modelcontextprotocol/sdk/tar.gz/main",
-    "googleapis": "^132.0.0"
+    "@modelcontextprotocol/sdk": "^0.1.0",
+    "googleapis": "^143.0.0"
   }
 }
+
