@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "dependencies": {
-  "@modelcontextprotocol/sdk": "git+https://github.com/modelcontextprotocol/sdk.git",
-  "googleapis": "^132.0.0"
-}
+    "@modelcontextprotocol/sdk": "https://codeload.github.com/modelcontextprotocol/sdk/tar.gz/main",
+    "googleapis": "^132.0.0"
+  }
 }
