@@ -1,5 +1,4 @@
 import { google } from 'googleapis';
-import { McpServer } from '@modelcontextprotocol/sdk/server';
 
 const auth = new google.auth.GoogleAuth({
   credentials: {
@@ -10,36 +9,46 @@ const auth = new google.auth.GoogleAuth({
 });
 
 const sheets = google.sheets({ version: 'v4', auth });
-const mcp = new McpServer({ name: 'google-sheets' });
-
-mcp.tool('read_sheet', {
-  description: 'Читає дані з Google Sheets',
-  input: {
-    type: 'object',
-    properties: {
-      spreadsheetId: { type: 'string' },
-      range: { type: 'string' }
-    },
-    required: ['spreadsheetId', 'range']
-  },
-  async execute({ spreadsheetId, range }) {
-    const res = await sheets.spreadsheets.values.get({ spreadsheetId, range });
-    return res.data.values || [];
-  }
-});
 
 export default async function handler(req, res) {
+  // CORS headers
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method === 'GET') {
     return res.status(200).send('✅ MCP Google Sheets працює');
   }
 
   if (req.method === 'POST') {
     try {
-      const response = await mcp.handle(req.body);
-      return res.status(200).json(response);
+      const { spreadsheetId, range } = req.body;
+      
+      if (!spreadsheetId || !range) {
+        return res.status(400).json({ 
+          error: 'spreadsheetId і range обов\'язкові' 
+        });
+      }
+
+      const result = await sheets.spreadsheets.values.get({ 
+        spreadsheetId, 
+        range 
+      });
+
+      return res.status(200).json({
+        success: true,
+        data: result.data.values || []
+      });
+
     } catch (err) {
-      console.error(err);
-      return res.status(500).json({ error: err.message });
+      console.error('Error:', err);
+      return res.status(500).json({ 
+        error: err.message 
+      });
     }
   }
 
