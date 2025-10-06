@@ -2,15 +2,17 @@
   "name": "google-sheets-mcp",
   "version": "1.0.0",
   "type": "module",
-  "main": "app/index.js",
+  "description": "MCP server for reading Google Sheets",
+  "main": "index.js",
   "scripts": {
-    "start": "node app/index.js"
+    "start": "node index.js"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
     "googleapis": "^143.0.0"
   },
   "engines": {
-    "node": "22.x"
+    "node": ">=18.0.0"
   }
 }
 
