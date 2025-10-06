@@ -46,4 +46,5 @@ app.post('/mcp', async (req, res) => {
   }
 });
 
+// ТІЛЬКИ це в кінці! Нічого більше!
 export default app;
