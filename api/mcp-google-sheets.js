@@ -1,34 +1,37 @@
-import { createMCPServer } from "@modelcontextprotocol/sdk";
 import { google } from "googleapis";
 
 const sheets = google.sheets("v4");
 
-const auth = new google.auth.GoogleAuth({
-  credentials: {
-    client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-  },
-  scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
-});
+export default async function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
-const mcp = createMCPServer({
-  name: "google-sheets-mcp",
-  actions: {
-    async getSheetData({ spreadsheetId, range }) {
-      try {
-        const client = await auth.getClient();
-        const res = await sheets.spreadsheets.values.get({
-          auth: client,
-          spreadsheetId,
-          range,
-        });
-        return res.data.values ?? [];
-      } catch (e) {
-        console.error("Google Sheets error:", e.errors || e.message);
-        throw e;
-      }
-    },
-  },
-});
+  const { spreadsheetId, range } = req.body;
+  if (!spreadsheetId || !range) {
+    return res.status(400).json({ error: "Missing spreadsheetId or range" });
+  }
 
-mcp.listen();
+  try {
+    const auth = new google.auth.GoogleAuth({
+      credentials: {
+        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, "\n"),
+      },
+      scopes: ["https://www.googleapis.com/auth/spreadsheets.readonly"],
+    });
+
+    const client = await auth.getClient();
+    const result = await sheets.spreadsheets.values.get({
+      auth: client,
+      spreadsheetId,
+      range,
+    });
+
+    res.status(200).json({ values: result.data.values ?? [] });
+  } catch (e) {
+    console.error("Google Sheets error:", e);
+    res.status(500).json({ error: e.message });
+  }
+}
+
