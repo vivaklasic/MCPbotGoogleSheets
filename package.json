@@ -7,7 +7,7 @@
     "start": "node app/index.js"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^0.1.0",
+    "@modelcontextprotocol/sdk": "latest",
     "googleapis": "^143.0.0"
   }
 }
