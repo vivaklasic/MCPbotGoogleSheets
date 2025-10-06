@@ -1,5 +1,8 @@
 {
   "version": 2,
+  "builds": [
+    { "src": "api/mcp-google-sheets.js", "use": "@vercel/node" }
+  ],
   "routes": [
     { "src": "/(.*)", "dest": "/api/mcp-google-sheets.js" }
   ]
