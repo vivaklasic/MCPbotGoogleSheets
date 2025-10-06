@@ -50,13 +50,15 @@ app.get("/", (_, res) => res.send("✅ MCP Google Sheets Server працює"));
 
 app.get("/health", (_, res) => res.json({ status: "ok" }));
 
-// Для Vercel експортуємо app
+// Весь попередній код...
+
+// Експорт для Vercel
 export default app;
 
-// Для локальної розробки
-if (process.env.NODE_ENV !== "production") {
+// Локальний запуск
+if (process.env.VERCEL !== '1') {
   const port = process.env.PORT || 3000;
   app.listen(port, () => {
-    console.log(`🚀 MCP Google Sheets running on port ${port}`);
+    console.log(`🚀 Server running on port ${port}`);
   });
 }
