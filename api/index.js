@@ -5,7 +5,6 @@ import { McpServer } from '@modelcontextprotocol/sdk/server';
 const app = express();
 app.use(express.json());
 
-// Google Sheets
 const auth = new google.auth.GoogleAuth({
   credentials: {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
@@ -15,8 +14,6 @@ const auth = new google.auth.GoogleAuth({
 });
 
 const sheets = google.sheets({ version: 'v4', auth });
-
-// MCP Server
 const mcp = new McpServer({ name: 'google-sheets' });
 
 mcp.tool('read_sheet', {
