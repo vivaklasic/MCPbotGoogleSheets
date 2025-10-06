@@ -3,6 +3,7 @@ import { google } from "googleapis";
 const sheets = google.sheets("v4");
 
 export default async function handler(req, res) {
+  // Разрешаем только POST-запросы
   if (req.method !== "POST") {
     return res.status(405).json({ error: "Method not allowed" });
   }
@@ -13,6 +14,7 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Настройка авторизации
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
@@ -22,6 +24,8 @@ export default async function handler(req, res) {
     });
 
     const client = await auth.getClient();
+
+    // Запрос к Google Sheets API
     const result = await sheets.spreadsheets.values.get({
       auth: client,
       spreadsheetId,
@@ -34,4 +38,3 @@ export default async function handler(req, res) {
     res.status(500).json({ error: e.message });
   }
 }
-
