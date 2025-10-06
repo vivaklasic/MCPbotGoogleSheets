@@ -21,9 +21,10 @@ const mcp = createMCPServer({
         spreadsheetId,
         range,
       });
-      return res.data.values;
+      return res.data.values ?? [];
     },
   },
 });
 
 mcp.listen();
+
