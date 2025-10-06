@@ -15,33 +15,20 @@ const mcp = createMCPServer({
   name: "google-sheets-mcp",
   actions: {
     async getSheetData({ spreadsheetId, range }) {
-      const client = await auth.getClient();
-      const res = await sheets.spreadsheets.values.get({
-        auth: client,
-        spreadsheetId,
-        range,
-      });
-      return res.data.values ?? [];
+      try {
+        const client = await auth.getClient();
+        const res = await sheets.spreadsheets.values.get({
+          auth: client,
+          spreadsheetId,
+          range,
+        });
+        return res.data.values ?? [];
+      } catch (e) {
+        console.error("Google Sheets error:", e.errors || e.message);
+        throw e;
+      }
     },
   },
 });
 
-actions: {
-  async getSheetData({ spreadsheetId, range }) {
-    try {
-      const client = await auth.getClient();
-      const res = await sheets.spreadsheets.values.get({
-        auth: client,
-        spreadsheetId,
-        range,
-      });
-      return res.data.values ?? [];
-    } catch (e) {
-      console.error("Google Sheets error:", e.errors || e.message);
-      throw e;
-    }
-  },
-},
-
 mcp.listen();
-
