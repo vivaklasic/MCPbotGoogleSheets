@@ -46,6 +46,24 @@ export default async function handler(req, res) {
     }
   }
 
+  // === 2. Новый endpoint show_image ===
+  if (path.endsWith('/api/show_image') && req.method === 'POST') {
+    const { url, caption } = req.body;
+
+    if (!url) {
+      return res.status(400).json({ error: 'URL обязательный' });
+    }
+
+    // возвращаем HTML или JSON для показа картинки
+    return res.status(200).json({
+      success: true,
+      html: `<figure style="text-align:center">
+               <img src="${url}" alt="image" style="max-width:80%; border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,0.2)" />
+               ${caption ? `<figcaption>${caption}</figcaption>` : ''}
+             </figure>`
+    });
+  }
+
   // === 3. Если ничего не совпало ===
   return res.status(404).json({ error: 'Endpoint not found' });
 }
